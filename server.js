@@ -24,7 +24,7 @@ app.get("/messages", function(request, response){
   response.json(messages);
 });
 
-app.get("/messages/:id", function(request, response){
+app.get("/messages/id/:id", function(request, response){
   const message = messages.find(m => m.id == request.params.id);
   response.json(message);
 });
@@ -45,12 +45,31 @@ app.post("/messages", function(request, response){
   response.json({success: true});
 });
 
-app.delete("/messages/:id", function(request, response){
+app.delete("/messages/id/:id", function(request, response){
   const index = messages.findIndex(m => m.id == request.params.id);
   messages.splice(index, 1);
 
   response.json({success: true});
 });
+
+app.get("/messages/search/:text",function(request, response){
+  const searchText = request.params.text.toLowerCase();
+  const searchString = messages.filter((msg)=>{
+    const lowerCaseString= msg.text.toLowerCase();
+    return lowerCaseString.includes(searchText);
+  });
+  if(searchString.length > 0){
+    return response.send(searchString);
+  } else{
+    return response.status(400).send("Not results")
+  }
+});
+
+app.get("/messages/latest", function(request, response){
+  const recente10Messages= messages.slice(-10)
+  response.json(recente10Messages);
+});
+
 
 
 app.listen(3000, () => {
