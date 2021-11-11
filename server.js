@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
 const welcomeMessage = {
   id: 0,
@@ -19,6 +20,38 @@ const messages = [welcomeMessage];
 app.get("/", function (request, response) {
   response.sendFile(__dirname + "/index.html");
 });
+app.get("/messages", function(request, response){
+  response.json(messages);
+});
+
+app.get("/messages/:id", function(request, response){
+  const message = messages.find(m => m.id == request.params.id);
+  response.json(message);
+});
+
+app.post("/messages", function(request, response){
+  const from = request.body.from;
+  const text = request.body.text;
+  if(!from || !text){
+    return response.status(400).json({error: "Message is missin some properties"})
+  }
+
+  const newMessage = {
+    id: messages.length,
+    from: from,
+    text: text
+  };
+  messages.push(newMessage);
+  response.json({success: true});
+});
+
+app.delete("/messages/:id", function(request, response){
+  const index = messages.findIndex(m => m.id == request.params.id);
+  messages.splice(index, 1);
+
+  response.json({success: true});
+});
+
 
 app.listen(3000, () => {
    console.log("Listening on port 3000")
