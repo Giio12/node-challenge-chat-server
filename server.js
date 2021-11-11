@@ -39,7 +39,8 @@ app.post("/messages", function(request, response){
   const newMessage = {
     id: messages.length,
     from: from,
-    text: text
+    text: text,
+    timeSent: new Date()
   };
   messages.push(newMessage);
   response.json({success: true});
