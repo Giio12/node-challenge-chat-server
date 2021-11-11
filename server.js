@@ -71,7 +71,14 @@ app.get("/messages/latest", function(request, response){
   response.json(recente10Messages);
 });
 
-
+app.put("/messages/:id", function(request, response){
+  const message = messages.find(msg => msg.id == request.params.id);
+  const from = request.body.from;
+  const text = request.body.text;
+  message.from = from;
+  message.text = text;
+  response.json({success: true});
+});
 
 app.listen(3000, () => {
    console.log("Listening on port 3000")
